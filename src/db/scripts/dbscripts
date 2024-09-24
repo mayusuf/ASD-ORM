@@ -1,0 +1,91 @@
+
+1.
+CREATE SCHEMA IF NOT EXISTS BankingSystem;
+
+2.
+CREATE TABLE `Address` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `street` varchar(255) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `zip_code` varchar(40) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+3.
+CREATE TABLE `Customer` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `birthdate` date NOT NULL,
+  `address_id` int DEFAULT NULL,
+  `phone` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `address_id` (`address_id`),
+  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`address_id`) REFERENCES `Address` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+4.
+CREATE TABLE `Account` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_number` varchar(50) NOT NULL,
+  `customer_id` int DEFAULT NULL,
+  `account_type` varchar(50) NOT NULL,
+  `accountopeningdate` datetime DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `withdrawlimit` decimal(20,0) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `customer_id` (`customer_id`),
+  CONSTRAINT `account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `Customer` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+5.
+CREATE TABLE `AccountEntry` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int DEFAULT NULL,
+  `entry_date` datetime NOT NULL,
+  `amount` decimal(2,0) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `account_id` (`account_id`),
+  CONSTRAINT `accountentry_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `Account` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+6.
+CREATE TABLE `CreditCardType` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type` varchar(45) DEFAULT NULL,
+  `monthlyInterestPercent` decimal(2,0) DEFAULT NULL,
+  `minimumPaymentPercent` decimal(2,0) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+7.
+CREATE TABLE `CreditCard` (
+  `creditCardNumber` int NOT NULL,
+  `accountNumber` int NOT NULL,
+  `creditCardType` varchar(45) DEFAULT NULL,
+  `expirationDate` datetime DEFAULT NULL,
+  `maxLimit` decimal(2,0) DEFAULT NULL,
+  PRIMARY KEY (`creditCardNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+8.
+CREATE TABLE `CreditCardEntry` (
+  `transactionId` int NOT NULL AUTO_INCREMENT,
+  `CreditCardNumber` int NOT NULL,
+  `transactionDate` datetime NOT NULL,
+  `transactionPoint` varchar(100) DEFAULT NULL,
+  `transactionAmount` varchar(45) DEFAULT NULL,
+  `transactionType` varchar(45) DEFAULT NULL,
+  `description` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`transactionId`),
+  KEY `fk_creditCardNumber` (`CreditCardNumber`),
+  CONSTRAINT `fk_creditCardNumber` FOREIGN KEY (`CreditCardNumber`) REFERENCES `CreditCard` (`creditCardNumber`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+
+
